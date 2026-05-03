@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一句话办成一件事 - 智能办事平台建设方案</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;900&family=Nunito:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===========================================
+           VIEWPORT FITTING: MANDATORY BASE STYLES
+           =========================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100%;
+            overflow: hidden;
+            padding: var(--slide-padding);
+        }
+
+        :root {
+            --title-size: clamp(1.5rem, 5vw, 4rem);
+            --h2-size: clamp(1.25rem, 3.5vw, 2.5rem);
+            --h3-size: clamp(1rem, 2.5vw, 1.75rem);
+            --body-size: clamp(0.75rem, 1.5vw, 1.125rem);
+            --small-size: clamp(0.65rem, 1vw, 0.875rem);
+
+            --slide-padding: clamp(1rem, 4vw, 4rem);
+            --content-gap: clamp(0.5rem, 2vw, 2rem);
+            --element-gap: clamp(0.25rem, 1vw, 1rem);
+
+            /* Swiss Modern Theme - clean corporate style */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f8f8;
+            --bg-accent: #fafafa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --text-muted: #999999;
+            --accent: #d62828;
+            --accent-light: rgba(214, 40, 40, 0.08);
+            --grid-line: rgba(0,0,0,0.04);
+            --border: rgba(0,0,0,0.08);
+        }
+
+        .card, .container, .content-box {
+            max-width: min(90vw, 1000px);
+            max-height: min(80vh, 700px);
+        }
+
+        .feature-list, .bullet-list {
+            gap: clamp(0.4rem, 1vh, 1rem);
+        }
+
+        .feature-list li, .bullet-list li {
+            font-size: var(--body-size);
+            line-height: 1.4;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+        }
+
+        img, .image-container {
+            max-width: 100%;
+            max-height: min(50vh, 400px);
+            object-fit: contain;
+        }
+
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(0.75rem, 3vw, 2rem);
+                --content-gap: clamp(0.4rem, 1.5vw, 1rem);
+                --title-size: clamp(1.25rem, 4.5vw, 2.5rem);
+                --h2-size: clamp(1rem, 3vw, 1.75rem);
+            }
+        }
+
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem);
+                --content-gap: clamp(0.3rem, 1vw, 0.75rem);
+                --title-size: clamp(1.1rem, 4vw, 2rem);
+                --body-size: clamp(0.7rem, 1.2vw, 0.95rem);
+            }
+
+            .nav-dots, .keyboard-hint, .decorative {
+                display: none;
+            }
+        }
+
+        @media (max-height: 500px) {
+            :root {
+                --slide-padding: clamp(0.4rem, 2vw, 1rem);
+                --title-size: clamp(1rem, 3.5vw, 1.5rem);
+                --h2-size: clamp(0.9rem, 2.5vw, 1.25rem);
+                --body-size: clamp(0.65rem, 1vw, 0.85rem);
+            }
+        }
+
+        @media (max-width: 600px) {
+            :root {
+                --title-size: clamp(1.25rem, 7vw, 2.5rem);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+        /* ===========================================
+           SLIDE STYLES - Swiss Modern Theme
+           =========================================== */
+
+        /* Slide 1: Cover */
+        .slide-cover {
+            background: var(--bg-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--accent);
+        }
+
+        .slide-cover .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.8;
+        }
+
+        .slide-cover .slide-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-cover .section-number {
+            font-family: 'Archivo', sans-serif;
+            font-size: clamp(6rem, 20vw, 16rem);
+            font-weight: 900;
+            color: var(--bg-secondary);
+            position: absolute;
+            right: -2vw;
+            bottom: -2vh;
+            line-height: 1;
+            opacity: 0.7;
+            letter-spacing: -0.05em;
+        }
+
+        .cover-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent);
+            color: white;
+            padding: clamp(0.4rem, 1vw, 0.6rem) clamp(0.8rem, 2vw, 1.2rem);
+            font-size: var(--small-size);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: var(--content-gap);
+        }
+
+        .cover-title {
+            font-family: 'Archivo', 'Noto Sans SC', sans-serif;
+            font-size: var(--title-size);
+            font-weight: 900;
+            color: var(--text-primary);
+            line-height: 1.1;
+            margin-bottom: var(--element-gap);
+            max-width: 900px;
+        }
+
+        .cover-subtitle {
+            font-family: 'Nunito', 'Noto Sans SC', sans-serif;
+            font-size: var(--h3-size);
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 700px;
+            line-height: 1.4;
+            margin-bottom: calc(var(--content-gap) * 2);
+        }
+
+        .cover-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            font-size: var(--body-size);
+            color: var(--text-muted);
+        }
+
+        .cover-meta strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Content Slides Common */
+        .slide-content-slide {
+            background: var(--bg-primary);
+            position: relative;
+        }
+
+        .slide-content-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 80px;
+            height: 100%;
+            background: var(--bg-secondary);
+            border-right: 4px solid var(--accent);
+        }
+
+        .slide-header {
+            display: flex;
+            align-items: baseline;
+            gap: clamp(1rem, 3vw, 2.5rem);
+            margin-bottom: var(--content-gap);
+        }
+
+        .slide-number {
+            font-family: 'Archivo', sans-serif;
+            font-size: clamp(3rem, 7vw, 5rem);
+            font-weight: 900;
+            color: var(--accent);
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .slide-title-group {
+            flex: 1;
+        }
+
+        .slide-title {
+            font-family: 'Archivo', 'Noto Sans SC', sans-serif;
+            font-size: var(--h2-size);
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .slide-subtitle {
+            font-size: var(--body-size);
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: var(--content-gap);
+            padding-left: clamp(1.5rem, 5vw, 4rem);
+            max-width: 1200px;
+        }
+
+        /* Pain Points Grid */
+        .pain-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(0.75rem, 2vw, 1.5rem);
+        }
+
+        .pain-card {
+            background: var(--bg-accent);
+            border: 1px solid var(--border);
+            padding: clamp(0.75rem, 2vw, 1.25rem);
+            position: relative;
+        }
+
+        .pain-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+        }
+
+        .pain-title {
+            font-family: 'Archivo', 'Noto Sans SC', sans-serif;
+            font-size: var(--body-size);
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+        }
+
+        .pain-desc {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Comparison Table */
+        .comparison-wrapper {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: clamp(0.75rem, 2.5vw, 2rem);
+            align-items: stretch;
+        }
+
+        .comparison-col {
+            background: var(--bg-accent);
+            padding: clamp(0.75rem, 2vw, 1.25rem);
+            border: 1px solid var(--border);
+        }
+
+        .comparison-col.highlight {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .comparison-col.highlight .col-title {
+            color: white;
+        }
+
+        .col-title {
+            font-family: 'Archivo', 'Noto Sans SC', sans-serif;
+            font-size: var(--body-size);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .comparison-col.highlight .col-title {
+            border-bottom-color: rgba(255,255,255,0.3);
+        }
+
+        .col-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            padding: 0.35rem 0;
+        }
+
+        .comparison-col.highlight .col-item {
+            color: rgba(255,255,255,0.95);
+        }
+
+        .col-item::before {
+            content: '→';
+            color: var(--accent);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .comparison-col.highlight .col-item::before {
+            color: white;
+        }
+
+        .arrow-col {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            color: var(--accent);
+        }
+
+        /* Five Principles */
+        .principles-list {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+        }
+
+        .principle-item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: clamp(0.75rem, 2.5vw, 1.5rem);
+            align-items: start;
+        }
+
+        .principle-num {
+            width: clamp(1.5rem, 3vw, 2rem);
+            height: clamp(1.5rem, 3vw, 2rem);
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Archivo', sans-serif;
+            font-weight: 700;
+            font-size: var(--small-size);
+            flex-shrink: 0;
+        }
+
+        .principle-content {
+            font-size: var(--body-size);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .principle-content strong {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Architecture */
+        .arch-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.35rem, 0.8vw, 0.5rem);
+        }
+
+        .arch-layer {
+            display: grid;
+            grid-template-columns: clamp(70px, 12vw, 120px) 1fr;
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+            align-items: stretch;
+        }
+
+        .arch-label {
+            background: var(--accent);
+            color: white;
+            padding: clamp(0.4rem, 1vw, 0.6rem) clamp(0.4rem, 1vw, 0.6rem);
+            font-size: var(--small-size);
+            font-weight: 600;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            line-height: 1.2;
+        }
+
+        .arch-desc {
+            background: var(--bg-accent);
+            border: 1px solid var(--border);
+            padding: clamp(0.4rem, 1vw, 0.6rem) clamp(0.6rem, 1.5vw, 1rem);
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--small-size);
+        }
+
+        .data-table th {
+            background: var(--accent);
+            color: white;
+            padding: clamp(0.4rem, 1vw, 0.6rem) clamp(0.6rem, 1.5vw, 1rem);
+            text-align: left;
+            font-weight: 600;
+            font-family: 'Archivo', 'Noto Sans SC', sans-serif;
+        }
+
+        .data-table td {
+            padding: clamp(0.4rem, 1vw, 0.6rem) clamp(0.6rem, 1.5vw, 1rem);
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .data-table tr:nth-child(even) td {
+            background: var(--bg-accent);
+        }
+
+        .key-point {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent);
+            padding: clamp(0.75rem, 2vw, 1.25rem);
+            font-size: var(--body-size);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .key-point strong {
+            color: var(--accent);
+        }
+
+        /* MCP Flow */
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.35rem, 1vw, 0.6rem);
+        }
+
+        .flow-step {
+            display: grid;
+            grid-template-columns: 1.5rem 1fr;
+            gap: clamp(0.5rem, 1.5vw, 0.8rem);
+            align-items: start;
+        }
+
+        .flow-num {
+            width: 1.3rem;
+            height: 1.3rem;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Archivo', sans-serif;
+            font-weight: 700;
+            font-size: 0.65rem;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .flow-text {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            line-height: 1.4;
+            padding-top: 0.05rem;
+        }
+
+        .flow-text strong {
+            color: var(--text-primary);
+        }
+
+        /* Two Paths */
+        .paths-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(0.75rem, 2vw, 1.5rem);
+        }
+
+        .path-card {
+            background: var(--bg-accent);
+            border: 1px solid var(--border);
+            padding: clamp(0.75rem, 2vw, 1.25rem);
+        }
+
+        .path-badge {
+            display: inline-block;
+            background: var(--text-primary);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            font-size: var(--small-size);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .path-title {
+            font-family: 'Archivo', 'Noto Sans SC', sans-serif;
+            font-size: var(--body-size);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .path-desc {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Risk Control */
+        .risk-levels {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+        }
+
+        .risk-card {
+            background: var(--bg-accent);
+            border: 1px solid var(--border);
+            padding: clamp(0.6rem, 1.5vw, 1rem);
+            text-align: center;
+        }
+
+        .risk-level {
+            font-size: var(--small-size);
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .risk-level.low { color: #2d8f2d; }
+        .risk-level.medium { color: #d68a28; }
+        .risk-level.high { color: var(--accent); }
+
+        .risk-ops {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+        }
+
+        .risk-action {
+            font-size: var(--small-size);
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Value Grid */
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+        }
+
+        .value-card {
+            background: var(--bg-accent);
+            border: 1px solid var(--border);
+            padding: clamp(0.6rem, 1.5vw, 1rem);
+            text-align: center;
+        }
+
+        .value-icon {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .value-title {
+            font-family: 'Archivo', 'Noto Sans SC', sans-serif;
+            font-size: var(--body-size);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .value-desc {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Phases */
+        .phases {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(0.75rem, 2vw, 1.5rem);
+        }
+
+        .phase-card {
+            background: var(--bg-accent);
+            border: 1px solid var(--border);
+            padding: clamp(0.75rem, 2vw, 1.25rem);
+            position: relative;
+            padding-top: calc(clamp(0.75rem, 2vw, 1.25rem) + 1rem);
+        }
+
+        .phase-card::before {
+            content: attr(data-phase);
+            position: absolute;
+            top: 0;
+            left: 1rem;
+            transform: translateY(-50%);
+            background: var(--accent);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            font-size: var(--small-size);
+            font-weight: 700;
+        }
+
+        .phase-title {
+            font-family: 'Archivo', 'Noto Sans SC', sans-serif;
+            font-size: var(--body-size);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .phase-goal {
+            font-size: var(--small-size);
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .phase-work {
+            font-size: var(--small-size);
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Nav Dots */
+        .nav-dots {
+            position: fixed;
+            right: clamp(1rem, 3vw, 2rem);
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            opacity: 0.3;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            opacity: 1;
+            background: var(--accent);
+            transform: scale(1.4);
+        }
+
+        .slide-indicator {
+            position: fixed;
+            bottom: clamp(1rem, 3vw, 2rem);
+            right: clamp(1rem, 3vw, 2rem);
+            font-family: 'Archivo', sans-serif;
+            font-size: var(--small-size);
+            color: var(--text-muted);
+            z-index: 100;
+        }
+
+        .slide-indicator .current {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: var(--h3-size);
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.5s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-dots" aria-label="Slide navigation"></nav>
+    <div class="slide-indicator">
+        <span class="current">1</span> / <span class="total">10</span>
+    </div>
+
+    <main>
+        <!-- Slide 1: Cover -->
+        <section class="slide slide-cover" data-slide="1">
+            <div class="grid-overlay"></div>
+            <div class="slide-content">
+                <span class="cover-badge">数智研究院</span>
+                <h1 class="cover-title">"一句话办成一件事"<br>智能办事平台建设方案</h1>
+                <p class="cover-subtitle">面向集团员工服务与跨系统协同的智能办事能力建设</p>
+                <div class="cover-meta">
+                    <span>汇报单位：<strong>数智研究院</strong></span>
+                </div>
+            </div>
+            <div class="section-number">01</div>
+        </section>
+
+        <!-- Slide 2: Pain Points -->
+        <section class="slide slide-content-slide" data-slide="2">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-number">02</span>
+                    <div class="slide-title-group">
+                        <h2 class="slide-title">现有系统"能查、能问"，<br>但还不能真正"帮员工把事办成"</h2>
+                        <p class="slide-subtitle">当前集团已经建设了多个业务系统和智能问答系统，但员工办事仍然存在四大分散问题</p>
+                    </div>
+                </div>
+                <div class="slide-body">
+                    <div class="pain-grid reveal">
+                        <div class="pain-card">
+                            <div class="pain-title">入口分散</div>
+                            <div class="pain-desc">OA、HR、ERP、HSE、合同、采购等系统分散，员工需要记住多个入口</div>
+                        </div>
+                        <div class="pain-card">
+                            <div class="pain-title">流程分散</div>
+                            <div class="pain-desc">制度、审批规则、操作指南不在一个地方，跨部门协同成本高</div>
+                        </div>
+                        <div class="pain-card">
+                            <div class="pain-title">数据分散</div>
+                            <div class="pain-desc">人员、组织、流程、权限、业务数据割裂，AI难以准确判断和执行</div>
+                        </div>
+                        <div class="pain-card">
+                            <div class="pain-title">接口分散</div>
+                            <div class="pain-desc">各系统接口标准不一、权限不一、日志不一，后续智能化难以规模复制</div>
+                        </div>
+                    </div>
+                    <div class="key-point reveal">
+                        <strong>核心问题：</strong>问题不是集团缺系统，而是缺少一个能够把系统、流程、数据和接口组织起来的<strong>统一智能办事入口</strong>。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: From Q&A to Transaction -->
+        <section class="slide slide-content-slide" data-slide="3">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-number">03</span>
+                    <div class="slide-title-group">
+                        <h2 class="slide-title">建设目标：从"告诉你怎么办"升级为"帮你把事办成"</h2>
+                        <p class="slide-subtitle">不是替代现有系统，而是在现有系统之上建设智能办事层</p>
+                    </div>
+                </div>
+                <div class="slide-body">
+                    <div class="comparison-wrapper reveal">
+                        <div class="comparison-col">
+                            <div class="col-title">现状：智能问答</div>
+                            <div class="col-item">员工问制度</div>
+                            <div class="col-item">系统回答政策条文</div>
+                            <div class="col-item">员工自己找入口</div>
+                            <div class="col-item">员工手动填报</div>
+                            <div class="col-item">员工自己查进度</div>
+                        </div>
+                        <div class="arrow-col">→</div>
+                        <div class="comparison-col highlight">
+                            <div class="col-title">目标：智能办事</div>
+                            <div class="col-item">员工提出办事需求</div>
+                            <div class="col-item">系统识别事项和流程</div>
+                            <div class="col-item">系统自动匹配业务系统</div>
+                            <div class="col-item">系统辅助补全信息</div>
+                            <div class="col-item">系统主动反馈办理状态</div>
+                        </div>
+                    </div>
+                    <div class="key-point reveal">
+                        <strong>平台定位：</strong>"一句话办成一件事"不是再做一个聊天机器人，而是把大模型能力、业务系统接口、流程规则、权限控制和数据治理组合起来，形成集团<strong>统一的智能办事能力</strong>。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Overall Approach -->
+        <section class="slide slide-content-slide" data-slide="4">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-number">04</span>
+                    <div class="slide-title-group">
+                        <h2 class="slide-title">总体思路：以场景为牵引、以数据为核心、<br>以接口为抓手、以安全为底线</h2>
+                        <p class="slide-subtitle">不是另起炉灶建设新系统，而是在现有系统体系之上补齐"智能调度层"</p>
+                    </div>
+                </div>
+                <div class="slide-body">
+                    <div class="principles-list reveal">
+                        <div class="principle-item">
+                            <div class="principle-num">1</div>
+                            <div class="principle-content"><strong>统一入口：</strong>员工不用判断去哪一个系统，通过一句话发起事项</div>
+                        </div>
+                        <div class="principle-item">
+                            <div class="principle-num">2</div>
+                            <div class="principle-content"><strong>智能理解：</strong>平台识别用户意图，自动判断是查询、申请、审批、报修、开具证明还是关闭整改项</div>
+                        </div>
+                        <div class="principle-item">
+                            <div class="principle-num">3</div>
+                            <div class="principle-content"><strong>任务编排：</strong>平台把"一件事"拆解成多个可执行步骤，如查询信息、校验权限、补齐材料、提交表单、触发审批、通知结果</div>
+                        </div>
+                        <div class="principle-item">
+                            <div class="principle-num">4</div>
+                            <div class="principle-content"><strong>系统调用：</strong>通过API网关或MCP方式调用现有业务系统，不推翻原系统、不重复建设</div>
+    </div>
+                        <div class="principle-item">
+                            <div class="principle-num">5</div>
+                            <div class="principle-content"><strong>安全管控：</strong>低风险自动办，中风险确认后办，高风险人工复核后办，全程留痕审计</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Architecture -->
+        <section class="slide slide-content-slide" data-slide="5">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-number">05</span>
+                    <div class="slide-title-group">
+                        <h2 class="slide-title">总体架构：五层架构支撑"一句话办成一件事"</h2>
+                        <p class="slide-subtitle">数信部管的是底层系统、数据、接口和权限；这个平台正好需要数信部统筹才能真正跑通</p>
+                    </div>
+                </div>
+                <div class="slide-body">
+                    <div class="arch-diagram reveal">
+                        <div class="arch-layer">
+                            <div class="arch-label">用户交互层</div>
+                            <div class="arch-desc">统一办事入口，支持PC、移动端、OA、企微等多端接入</div>
+                        </div>
+                        <div class="arch-layer">
+                            <div class="arch-label">AI Agent<br>调度层</div>
+                            <div class="arch-desc">负责意图识别、任务规划、风险判断、结果反馈</div>
+                        </div>
+                        <div class="arch-layer">
+                            <div class="arch-label">MCP/API<br>连接层</div>
+                            <div class="arch-desc">负责连接OA、HR、ERP、HSE、合同、采购等业务系统</div>
+                        </div>
+                        <div class="arch-layer">
+                            <div class="arch-label">数据与<br>知识层</div>
+                            <div class="arch-desc">沉淀事项、流程、接口、权限、知识、日志等数据资产</div>
+                        </div>
+                        <div class="arch-layer">
+                            <div class="arch-label">基础系统层</div>
+                            <div class="arch-desc">依托三级大数据平台、AI中台、统一认证和各业务系统</div>
+                        </div>
+                    </div>
+                    <div class="key-point reveal">
+                        <strong>核心价值：</strong>平台不替代现有业务系统，而是通过统一智能调度，把分散系统能力封装为<strong>可调用、可审计、可复用</strong>的办事工具。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Data System -->
+        <section class="slide slide-content-slide" data-slide="6">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-number">06</span>
+                    <div class="slide-title-group">
+                        <h2 class="slide-title">核心不是大模型，而是办事数据体系</h2>
+                        <p class="slide-subtitle">把每一类事项都结构化成可识别、可编排、可调用、可审计的数据资产</p>
+                    </div>
+                </div>
+                <div class="slide-body">
+                    <table class="data-table reveal">
+                        <thead>
+                            <tr>
+                                <th>数据类型</th>
+                                <th>解决的问题</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>事项数据</strong></td>
+                                <td>员工能办哪些事</td>
+                            </tr>
+                            <tr>
+                                <td><strong>流程数据</strong></td>
+                                <td>每件事应该怎么走</td>
+                            </tr>
+                            <tr>
+                                <td><strong>接口数据</strong></td>
+                                <td>调哪些系统、哪些接口</td>
+                            </tr>
+                            <tr>
+                                <td><strong>权限数据</strong></td>
+                                <td>谁能办、能办到哪一步</td>
+                            </tr>
+                            <tr>
+                                <td><strong>知识数据</strong></td>
+                                <td>制度依据、材料要求、操作规则</td>
+                            </tr>
+                            <tr>
+                                <td><strong>日志数据</strong></td>
+                                <td>谁在什么时间办了什么、结果如何</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="key-point reveal">
+                        <strong>对数信部的价值：</strong>这个项目会帮助数信部沉淀集团统一的<strong>事项目录、接口目录、权限目录和操作日志体系</strong>。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: MCP/API Connection -->
+        <section class="slide slide-content-slide" data-slide="7">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-number">07</span>
+                    <div class="slide-title-group">
+                        <h2 class="slide-title">通过MCP/API把现有系统能力封装成"可调用工具"</h2>
+                        <p class="slide-subtitle">MCP = AI调用业务系统能力的一套标准连接方式</p>
+                    </div>
+                </div>
+                <div class="slide-body">
+                    <div class="paths-grid reveal">
+                        <div class="path-card">
+                            <span class="path-badge">前期快速验证</span>
+                            <div class="path-title">API网关 + Function Calling</div>
+                            <div class="path-desc">对成熟系统接口进行统一封装，先跑通样板场景</div>
+                        </div>
+                        <div class="path-card">
+                            <span class="path-badge">中长期规模推广</span>
+                            <div class="path-title">MCP Server标准接入</div>
+                            <div class="path-desc">各业务系统按标准暴露工具能力，实现动态发现和统一调用</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: var(--content-gap);">
+                        <p style="font-size: var(--body-size); color: var(--text-primary); margin-bottom: 0.5rem;"><strong>示例：员工说"帮我查一下这个合同审批到哪一步了"</strong></p>
+                        <div class="flow-diagram reveal">
+                            <div class="flow-step"><div class="flow-num">1</div><div class="flow-text">识别为<strong>"合同审批进度查询"</strong></div></div>
+                            <div class="flow-step"><div class="flow-num">2</div><div class="flow-text">提取合同编号或合同名称</div></div>
+                            <div class="flow-step"><div class="flow-num">3</div><div class="flow-text">校验用户是否有查询权限</div></div>
+                            <div class="flow-step"><div class="flow-num">4</div><div class="flow-text">调用合同系统查询接口</div></div>
+                            <div class="flow-step"><div class="flow-num">5</div><div class="flow-text">返回审批节点、当前处理人、停留时长</div></div>
+                            <div class="flow-step"><div class="flow-num">6</div><div class="flow-text">记录调用日志和查询结果</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Security Control -->
+        <section class="slide slide-content-slide" data-slide="8">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-number">08</span>
+                    <div class="slide-title-group">
+                        <h2 class="slide-title">AI可以辅助办事，但不能绕过权限、流程和审计</h2>
+                        <p class="slide-subtitle">平台不是让AI替人审批、替人担责，而是在既有权限和流程内提高办事效率</p>
+                    </div>
+                </div>
+                <div class="slide-body">
+                    <div class="risk-levels reveal">
+                        <div class="risk-card">
+                            <div class="risk-level low">低风险</div>
+                            <div class="risk-ops">查询制度、查询进度、查看本人信息</div>
+                            <div class="risk-action">自动执行，记录日志</div>
+                        </div>
+                        <div class="risk-card">
+                            <div class="risk-level medium">中风险</div>
+                            <div class="risk-ops">提交申请、修改信息、生成工单</div>
+                            <div class="risk-action">用户确认后执行</div>
+                        </div>
+                        <div class="risk-card">
+                            <div class="risk-level high">高风险</div>
+                            <div class="risk-ops">审批通过、权限变更、资金支付</div>
+                            <div class="risk-action">人工复核，走原审批流</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: var(--content-gap);">
+                        <p style="font-size: var(--body-size); font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">六大治理机制</p>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(0.4rem, 1vw, 0.75rem); font-size: var(--small-size); color: var(--text-secondary);">
+                            <span>• 统一身份认证</span>
+                            <span>• 权限矩阵</span>
+                            <span>• 风险分级</span>
+                            <span>• 二次确认</span>
+                            <span>• 全链路审计</span>
+                            <span>• 异常中断</span>
+                        </div>
+                    </div>
+                    <div class="key-point reveal">
+                        所有关键操作仍然遵循原有审批制度，并通过平台形成<strong>更完整的审计记录</strong>。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: Value Proposition -->
+        <section class="slide slide-content-slide" data-slide="9">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-number">09</span>
+                    <div class="slide-title-group">
+                        <h2 class="slide-title">建设价值：从单点AI应用升级为集团级智能办事能力</h2>
+                        <p class="slide-subtitle">以AI为牵引，推动集团内部事项、流程、接口、权限和数据的统一治理</p>
+                    </div>
+                </div>
+                <div class="slide-body">
+                    <div class="value-grid reveal">
+                        <div class="value-card">
+                            <div class="value-icon">👤</div>
+                            <div class="value-title">员工</div>
+                            <div class="value-desc">少找系统、少填表、少问人，一句话发起办事</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="value-icon">🏢</div>
+                            <div class="value-title">业务部门</div>
+                            <div class="value-desc">减少重复咨询、降低材料错误、提高流程透明度</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="value-icon">📊</div>
+                            <div class="value-title">数信部</div>
+                            <div class="value-desc">统一系统入口、统一接口管理、统一权限审计、统一数据沉淀</div>
+                        </div>
+                        <div class="value-card">
+                            <div class="value-icon">🏛️</div>
+                            <div class="value-title">集团</div>
+                            <div class="value-desc">推动流程标准化、数据资产化、服务智能化、治理可视化</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: var(--content-gap);">
+                        <p style="font-size: var(--body-size); font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">沉淀四类集团级数字资产</p>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(0.5rem, 1.5vw, 1rem);">
+                            <div style="font-size: var(--small-size); color: var(--text-secondary);"><strong style="color: var(--accent);">事项目录资产：</strong>集团员工到底有哪些高频事项</div>
+                            <div style="font-size: var(--small-size); color: var(--text-secondary);"><strong style="color: var(--accent);">接口工具资产：</strong>各系统有哪些能力可以被安全调用</div>
+                            <div style="font-size: var(--small-size); color: var(--text-secondary);"><strong style="color: var(--accent);">权限规则资产：</strong>谁可以办什么、哪些操作需要确认</div>
+                            <div style="font-size: var(--small-size); color: var(--text-secondary);"><strong style="color: var(--accent);">运行日志资产：</strong>哪些事项高频、哪里卡顿、哪个系统瓶颈明显</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 10: Summary & Next Steps -->
+        <section class="slide slide-content-slide" data-slide="10">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-number">10</span>
+                    <div class="slide-title-group">
+                        <h2 class="slide-title">下一步建议：先建样板、再沉淀标准、最后规模推广</h2>
+                        <p class="slide-subtitle">建议由数信部统筹系统接入、接口规范和安全审计，数智研究院负责智能体与平台能力建设</p>
+                    </div>
+                </div>
+                <div class="slide-body">
+                    <div class="phases reveal">
+                        <div class="phase-card" data-phase="第一阶段">
+                            <div class="phase-title">样板验证</div>
+                            <div class="phase-goal">跑通最小闭环</div>
+                            <div class="phase-work">选择3—5个高频事项，接入2—3个系统</div>
+                        </div>
+                        <div class="phase-card" data-phase="第二阶段">
+                            <div class="phase-title">能力沉淀</div>
+                            <div class="phase-goal">形成标准体系</div>
+                            <div class="phase-work">建设事项库、工具库、权限库、日志库</div>
+                        </div>
+                        <div class="phase-card" data-phase="第三阶段">
+                            <div class="phase-title">规模推广</div>
+                            <div class="phase-goal">集团级复用</div>
+                            <div class="phase-work">推广到更多业务系统和单位</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: var(--content-gap);">
+                        <p style="font-size: var(--body-size); font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">一期建议场景</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: var(--small-size);">
+                            <span style="background: var(--bg-secondary); padding: 0.3rem 0.6rem; border-radius: 2px;">请假申请</span>
+                            <span style="background: var(--bg-secondary); padding: 0.3rem 0.6rem; border-radius: 2px;">证明开具</span>
+                            <span style="background: var(--bg-secondary); padding: 0.3rem 0.6rem; border-radius: 2px;">审批进度查询</span>
+                            <span style="background: var(--bg-secondary); padding: 0.3rem 0.6rem; border-radius: 2px;">设备报修</span>
+                            <span style="background: var(--bg-secondary); padding: 0.3rem 0.6rem; border-radius: 2px;">制度问答与智能导办</span>
+                        </div>
+                    </div>
+                    <div class="key-point reveal">
+                        <strong>建议：</strong>先形成可演示、可运行、可评估的样板，再逐步推广到集团更多业务场景。
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Presentation Controller
+        class PresentationController {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.totalSlides = this.slides.length;
+                this.currentSlide = 1;
+                this.navDots = document.querySelector('.nav-dots');
+                this.currentIndicator = document.querySelector('.slide-indicator .current');
+                this.totalIndicator = document.querySelector('.slide-indicator .total');
+
+                this.init();
+            }
+
+            init() {
+                this.createNavDots();
+                this.setupIntersectionObserver();
+                this.setupKeyboardNav();
+                this.setupTouchNav();
+                this.updateIndicators();
+                this.totalIndicator.textContent = this.totalSlides;
+            }
+
+            createNavDots() {
+                for (let i = 1; i <= this.totalSlides; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'nav-dot' + (i === 1 ? ' active' : '');
+                    dot.setAttribute('data-slide', i);
+                    dot.addEventListener('click', () => this.goToSlide(i));
+                    this.navDots.appendChild(dot);
+                }
+            }
+
+            setupIntersectionObserver() {
+                const options = {
+                    root: null,
+                    rootMargin: '0px',
+                    threshold: 0.5
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const slideNum = parseInt(entry.target.dataset.slide);
+                            this.currentSlide = slideNum;
+                            this.updateIndicators();
+                            this.updateNavDots();
+                            this.revealContent(entry.target);
+                        }
+                    });
+                }, options);
+
+                this.slides.forEach(slide => observer.observe(slide));
+            }
+
+            setupKeyboardNav() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+                        e.preventDefault();
+                        this.nextSlide();
+                    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.prevSlide();
+                    } else if (e.key === 'Home') {
+                        e.preventDefault();
+                        this.goToSlide(1);
+                    } else if (e.key === 'End') {
+                        e.preventDefault();
+                        this.goToSlide(this.totalSlides);
+                    }
+                });
+            }
+
+            setupTouchNav() {
+                let touchStartY = 0;
+                let touchEndY = 0;
+
+                document.addEventListener('touchstart', (e) => {
+                    touchStartY = e.changedTouches[0].screenY;
+                }, { passive: true });
+
+                document.addEventListener('touchend', (e) => {
+                    touchEndY = e.changedTouches[0].screenY;
+                    this.handleSwipe(touchStartY, touchEndY);
+                }, { passive: true });
+            }
+
+            handleSwipe(startY, endY) {
+                const diff = startY - endY;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) {
+                        this.nextSlide();
+                    } else {
+                        this.prevSlide();
+                    }
+                }
+            }
+
+            nextSlide() {
+                if (this.currentSlide < this.totalSlides) {
+                    this.goToSlide(this.currentSlide + 1);
+                }
+            }
+
+            prevSlide() {
+                if (this.currentSlide > 1) {
+                    this.goToSlide(this.currentSlide - 1);
+                }
+            }
+
+            goToSlide(num) {
+                const targetSlide = document.querySelector(`[data-slide="${num}"]`);
+                if (targetSlide) {
+                    targetSlide.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+
+            updateIndicators() {
+                this.currentIndicator.textContent = this.currentSlide;
+            }
+
+            updateNavDots() {
+                const dots = this.navDots.querySelectorAll('.nav-dot');
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index + 1 === this.currentSlide);
+                });
+            }
+
+            revealContent(slide) {
+                const reveals = slide.querySelectorAll('.reveal');
+                reveals.forEach((el, i) => {
+                    setTimeout(() => {
+                        el.classList.add('visible');
+                    }, i * 100);
+                });
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const controller = new PresentationController();
+
+            // Initial reveal for first slide
+            const firstSlide = document.querySelector('[data-slide="1"]');
+            controller.revealContent(firstSlide);
+        });
+    </script>
+</body>
+</html>
